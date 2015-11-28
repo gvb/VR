@@ -33,7 +33,12 @@ void setup() {
 }
 
 void loop() {
-  colorStripe(strip.Color(255, 0, 0), strip.Color(255, 255, 255), 5, 100); // Red/White 5x
+  fadeTo(strip.Color(255, 255, 255), 10);
+  colorStripe(strip.Color(255, 255, 255), strip.Color(255, 0, 0), 5, 100); // Red/White 5x
+  fadeTo(strip.Color(0, 0 , 0), 10);
+  fadeTo(strip.Color(0, 255 , 0), 10);
+  colorStripe(strip.Color(0, 255, 0), strip.Color(255, 0, 0), 5, 100); // Red/White 5x
+  fadeTo(strip.Color(0, 0 , 0), 10);
   rainbowCycle(20);
 
 #ifdef COMMENT_OUT
@@ -74,6 +79,49 @@ void colorStripe(uint32_t c1, uint32_t c2, int repeats, int wait) {
     strip.show();
     delay(wait);
     i = (i + 1) % strip.numPixels();
+  }
+}
+
+// Fade to the given color
+void fadeTo(uint32_t c, int wait) {
+  uint32_t current;
+  int changes;
+  
+  changes = -1;
+  while (changes != 0) {
+    changes = 0;
+    for(int j = 0; j < strip.numPixels(); j++) {
+      current = strip.getPixelColor(j);
+      if ((current & 0x000000FF) < (c & 0x000000FF)) {
+          current += 0x0000001;
+          changes++;
+      }
+      if ((current & 0x000000FF) > (c & 0x000000FF)) {
+          current -= 0x0000001;
+          changes++;
+      }
+
+      if ((current & 0x0000FF00) < (c & 0x0000FF00)) {
+          current += 0x00000100;
+          changes++;
+      }
+      if ((current & 0x0000FF00) > (c & 0x0000FF00)) {
+          current -= 0x00000100;
+          changes++;
+      }
+
+      if ((current & 0x00FF0000) < (c & 0x00FF0000)) {
+          current += 0x00010000;
+          changes++;
+      }
+      if ((current & 0x00FF0000) > (c & 0x00FF0000)) {
+          current -= 0x00010000;
+          changes++;
+      }
+      strip.setPixelColor(j, current);
+    }
+    strip.show();
+    delay(wait);
   }
 }
 
