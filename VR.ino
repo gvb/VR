@@ -33,32 +33,20 @@ void setup() {
 }
 
 void loop() {
-//  colorStripe(strip.Color(255, 0, 0), strip.Color(255, 255, 255), 20, 100); // Red
-
-  uint16_t i;
-
-  while(1) {
-    strip.setPixelColor((i + (strip.numPixels() / 2)) % strip.numPixels(), strip.Color(255, 0, 0));
-    strip.setPixelColor(i, strip.Color(255, 255, 255));
-
-    strip.show();
-    delay(200);
-    i = (i + 1) % strip.numPixels();
-  }
+  colorStripe(strip.Color(255, 0, 0), strip.Color(255, 255, 255), 5, 100); // Red/White 5x
+  rainbowCycle(20);
 
 #ifdef COMMENT_OUT
   // Some example procedures showing how to display to the pixels:
   colorWipe(strip.Color(255, 0, 0), 50); // Red
   colorWipe(strip.Color(0, 255, 0), 50); // Green
   colorWipe(strip.Color(0, 0, 255), 50); // Blue
-#endif
-#ifdef COMMENT_OUT
+
   // Send a theater pixel chase in...
   theaterChase(strip.Color(127, 127, 127), 50); // White
   theaterChase(strip.Color(127, 0, 0), 50); // Red
   theaterChase(strip.Color(0, 0, 127), 50); // Blue
-#endif
-#ifdef COMMENT_OUT
+
   rainbow(20);
   rainbowCycle(20);
   theaterChaseRainbow(50);
@@ -75,16 +63,17 @@ void colorWipe(uint32_t c, uint8_t wait) {
 }
 
 // Run across the strip with a stripe of color
-void colorStripe(uint32_t c1, uint32_t c2, uint16_t width, uint8_t wait) {
-  for(uint16_t i=0; i<strip.numPixels() + width; i++) {
-    if (i < strip.numPixels()) {
-      strip.setPixelColor(i, c1);
-    }
-    if (i - width >= 0) {
-      strip.setPixelColor(i - width, c2);
-    }
+void colorStripe(uint32_t c1, uint32_t c2, int repeats, int wait) {
+
+  int i = 0;
+
+  for(int j = 0; j < (repeats * strip.numPixels()); j++) {
+    strip.setPixelColor((i + (strip.numPixels() / 2)) % strip.numPixels(), c1);
+    strip.setPixelColor(i, c2);
+
     strip.show();
     delay(wait);
+    i = (i + 1) % strip.numPixels();
   }
 }
 
